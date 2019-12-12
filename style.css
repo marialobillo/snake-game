@@ -1,0 +1,13 @@
+
+
+body{
+    background-color:#000;
+    color: #bbb;
+}
+
+#board{
+    width: 400px;
+    margin: 20px;
+    background-color:#8ECC38;
+    border: solid 7px #A7D947;
+}
