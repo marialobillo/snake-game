@@ -1,25 +1,35 @@
-function checkSupported(){
-    canvas = document.getElementById('board');
+let canvas = document.querySelector('#board');
+let context = canvas.getContext('2d');
 
-    if(canvas.getContext){
-       drawSnake();
-    } else {
-        // Canvas is not supported
-        alert("Sorry, your browser does not support the canvas.");
+let xPos = 0;
+let yPos = 0;
+let width = 15;
+let height = 15;
+
+context.rect(xPos, yPos, width, height);
+context.stroke();
+
+
+function move(e){
+
+    switch(e.keyCode){
+        case 37:
+            xPos -= 5;
+            break;
+        case 38:
+            yPos -= 5;
+            break; 
+        case 39:
+            xPos += 5;
+            break;
+        case 40:
+            yPos += 5;
+            break;
     }
+
+    canvas.width = canvas.width;
+    context.rect(xPos, yPos, width, height);
+    context.stroke();
 }
 
-function drawSnake(){
-    ctx = canvas.getContext('2d');
-
-    ctx.fillStyle = "rgb(0,0,200)";
-    
-    let x = 200;
-    let y = 300;
-    let width = 10;
-    let height = 10;
-
-    // draw a square on x,y position
-    ctx.fillRect(x, y, width, height);
-}
-
+document.onkeydown = move;
