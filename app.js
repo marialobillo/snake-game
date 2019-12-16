@@ -6,18 +6,22 @@
     const rows = canvas.height / scale;
     const columns = canvas.width / scale;
 
-    let x = 0;
-    let y = 0;
+    let snake = {
+        x: 2 * scale,
+        y: 2 * scale,
+        width: scale,
+        height: scale,
+        tail: [],
+    }
+    let apple = {
+        x: 0,
+        y: 0,
+    }
     let xSpeed = scale * 1;
     let ySpeed = 0;
-    let width = 15;
-    let height = 15;
-    let appleX, appleY;
-    
     let score = 0;
-    let tail = [];
 
-    context.rect(x, y, width, height);
+    context.rect(snake.x, snake.y, snake.width, snake.height);
     context.stroke();
 
 
@@ -44,33 +48,54 @@
     }
 
     function update(){
-        x += xSpeed;
-        y += ySpeed;
+        snake.x += xSpeed;
+        snake.y += ySpeed;
     }
 
     function drawSnake(){
         context.fillStyle = '#FFFFFF';
-        context.fillRect(x, y, scale, scale);
+        context.fillRect(snake.x, snake.y, scale, scale);
     }
 
     function getApplePosition(){
          // randomly x and y
-         appleX = (Math.floor(Math.random() * rows - 1) + 1) * scale;
-         appleY = (Math.floor(Math.random() * columns - 1) + 1) * scale;
+         apple.x = (Math.floor(Math.random() * rows - 1) + 1) * scale;
+         apple.y = (Math.floor(Math.random() * columns - 1) + 1) * scale;
     }
     function drawApple(){
        
 
         context.fillStyle = '#FF0000';
-        context.fillRect(appleX, appleY, scale, scale);
+        context.fillRect(apple.x, apple.y, scale, scale);
     }
 
     function eatApple(){
-        if(x == appleX && y === appleY){
+        if(snake.x == apple.x && snake.y === apple.y){
             return true;
         } else {
             return false;
         }
+    }
+
+    function checkWalls(){
+       
+        if(snake.x >= canvas.width || snake.x < 0 
+            || snake.y >= canvas.height || snake.y < 0){
+            console.log('GAME OVER!!');
+            document.getElementById('status').innerText = 'GAME OVER!';
+            restartGame();
+            
+        }
+    }
+
+    function restartGame(){
+        score = 0;
+        snake.tail = [];
+        snake.x = 2 * scale;
+        snake.y = 2 * scale;
+        xSpeed = scale * 1;
+        ySpeed = 0;
+        document.getElementById('status').innerText = '';
     }
 
     function main(){
@@ -81,6 +106,7 @@
 
         window.setInterval(() => {
             context.clearRect(0,0, canvas.width, canvas.height);
+            document.getElementById('status').innertText = '';
             drawApple();
             update();
             drawSnake();
@@ -93,6 +119,8 @@
                 //console.log('score', score);
 
             }
+
+            checkWalls();
 
 
             document.getElementById('score').innerText = score + ' apples';
