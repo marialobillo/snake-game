@@ -13,6 +13,9 @@
     let width = 15;
     let height = 15;
     let appleX, appleY;
+    
+    let score = 0;
+    let tail = [];
 
     context.rect(x, y, width, height);
     context.stroke();
@@ -62,6 +65,14 @@
         context.fillRect(appleX, appleY, scale, scale);
     }
 
+    function eatApple(){
+        if(x == appleX && y === appleY){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function main(){
         document.onkeydown = move;
 
@@ -74,8 +85,17 @@
             update();
             drawSnake();
 
+            if(eatApple()){
+                //console.log('EATING!!!');
+                getApplePosition();
+                drawApple();
+                score += 1;
+                //console.log('score', score);
 
-            
+            }
+
+
+            document.getElementById('score').innerText = score + ' apples';
 
         }, 250);
     }
