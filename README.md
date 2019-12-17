@@ -2,11 +2,11 @@
 
 _The classsic Snake Game on plain Javascript._
 
-View live on <a href="demo-snake.png">here</a>.
+View live on <a href="https://marialobillo.github.io/snake-game/">here</a>.
 
 <br>
 
-<img src="demo.png" width="500">
+<img src="demo-snake.png" width="500">
 
 ## Summary
 
