@@ -2,9 +2,11 @@
 
     const canvas = document.querySelector('#board');
     const context = canvas.getContext('2d');
-    const scale = 15;
+    const scale = 20;
     const rows = canvas.height / scale;
     const columns = canvas.width / scale;
+    console.log('rows: ', rows);
+    console.log('columns: ', columns);
 
     let snake = {
         x: 2 * scale,
@@ -87,12 +89,13 @@
             snake.tail[i] = snake.tail[i + 1];
         }
         snake.tail[score - 1] = {x: snake.x, y: snake.y};
-        // snake speed
+        // moving the snake
         snake.x += xSpeed;
         snake.y += ySpeed;
     }
 
     function drawSnake(){
+        // snake head
         context.fillStyle = '#FFFFFF';
         context.fillRect(snake.x, snake.y, scale, scale);
 
@@ -109,7 +112,6 @@
          apple.y = (Math.floor(Math.random() * columns - 1) + 1) * scale;
     }
     function drawApple(){
-
         context.fillStyle = '#FF0000';
         context.fillRect(apple.x, apple.y, scale, scale);
     }
@@ -124,12 +126,23 @@
 
     function checkWalls(){
        
-        if(snake.x >= canvas.width || snake.x < 0 
+        if(snake.x > canvas.width || snake.x < 0 
             || snake.y >= canvas.height || snake.y < 0){
-            console.log('GAME OVER!!');
-            document.getElementById('status').innerText = 'GAME OVER!';
-            restartGame();
             
+                // GAME OVER
+            alert('GAME OVER!!')
+            restartGame();
+        }
+    }
+
+    function checkCollision(){
+        for(let i = 0; i < snake.tail.length; i++){
+            if(snake.x === snake.tail[i].x && snake.y === snake.tail[i].y){
+                
+                // GAME OVER
+                alert('GAME OVER!!');
+                restartGame();
+            }
         }
     }
 
@@ -140,6 +153,8 @@
         snake.y = 2 * scale;
         xSpeed = scale * 1;
         ySpeed = 0;
+        xAxis = true;
+        yAxis = false;
         document.getElementById('status').innerText = '';
     }
 
@@ -158,21 +173,21 @@
             update();
             drawSnake();
 
+            // eating apples
             if(eatApple()){
-                //console.log('EATING!!!');
                 getApplePosition();
                 drawApple();
                 score += 1;
-                //console.log('score', score);
-
             }
 
+            // Check collitions walls and snake itself
             checkWalls();
+            checkCollision();
 
 
             document.getElementById('score').innerText = score + ' apples';
 
-        }, 250);
+        }, 300);
     }
 
     main();
