@@ -2,7 +2,7 @@
 
 _The classsic Snake Game on plain Javascript._
 
-View live on here.
+View live on <a href="demo-snake.png">here</a>.
 
 <br>
 

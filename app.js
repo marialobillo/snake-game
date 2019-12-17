@@ -144,6 +144,7 @@
                 restartGame();
             }
         }
+        
     }
 
     function restartGame(){
