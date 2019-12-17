@@ -5,8 +5,6 @@
     const scale = 20;
     const rows = canvas.height / scale;
     const columns = canvas.width / scale;
-    console.log('rows: ', rows);
-    console.log('columns: ', columns);
 
     let snake = {
         x: 2 * scale,
@@ -21,8 +19,10 @@
     }
     let xSpeed = scale * 1;
     let ySpeed = 0;
+    // the snake is moving on axis x or y
     let xAxis = true;
     let yAxis = false;
+    // score
     let score = 0;
 
     let paused = false;
@@ -31,9 +31,9 @@
     context.stroke();
 
 
-    function move(e){
+    function move(event){
 
-        let code = e.keyCode;
+        let code = event.keyCode;
 
         if(xAxis){
             if(code == 38){
@@ -100,9 +100,9 @@
         context.fillRect(snake.x, snake.y, scale, scale);
 
         // drawing the snake tail
-        for(let i=0; i < snake.tail.length; i++){
-            context.fillRect(snake.tail[i].x, snake.tail[i].y, scale, scale);
-        }
+        snake.tail.forEach( tail => {
+            context.fillRect(tail.x, tail.y, scale, scale);
+        })
         context.fillRect(snake.x, snake.y, scale, scale);
     }
 
@@ -136,15 +136,15 @@
     }
 
     function checkCollision(){
-        for(let i = 0; i < snake.tail.length; i++){
-            if(snake.x === snake.tail[i].x && snake.y === snake.tail[i].y){
-                
+       
+        snake.tail.forEach(tail => {
+            if(snake.x === tail.x && snake.y === tail.y){
                 // GAME OVER
                 alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
                 restartGame();
             }
-        }
-        
+        })
+
     }
 
     function restartGame(){
@@ -156,7 +156,6 @@
         ySpeed = 0;
         xAxis = true;
         yAxis = false;
-        document.getElementById('status').innerText = '';
     }
 
     function main(){
@@ -169,7 +168,6 @@
 
         window.setInterval(() => {
             context.clearRect(0,0, canvas.width, canvas.height);
-            document.getElementById('status').innertText = '';
             drawApple();
             update();
             drawSnake();
@@ -191,6 +189,7 @@
         }, 300);
     }
 
+    // the game
     main();
 
 })();
