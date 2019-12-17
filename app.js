@@ -19,7 +19,11 @@
     }
     let xSpeed = scale * 1;
     let ySpeed = 0;
+    let xAxis = true;
+    let yAxis = false;
     let score = 0;
+
+    let paused = false;
 
     context.rect(snake.x, snake.y, snake.width, snake.height);
     context.stroke();
@@ -27,32 +31,63 @@
 
     function move(e){
 
-        switch(e.keyCode){
-            case 37:
-                xSpeed = -scale * 1;
-                ySpeed = 0; 
-                break;
-            case 38:
+        let code = e.keyCode;
+
+        if(xAxis){
+            if(code == 38){
+                ySpeed = -scale;
                 xSpeed = 0;
-                ySpeed = -scale * 1;
-                break; 
-            case 39:
-                xSpeed = scale * 1;
+                xAxis = false;
+                yAxis = true;
+            }
+            if(code == 40){
+                ySpeed = scale;
+                xSpeed = 0;
+                xAxis = false;
+                yAxis = true;
+            }
+        }
+        if(yAxis){
+            if(code == 37){
                 ySpeed = 0;
-                break;
-            case 40:
-                xSpeed = 0;
-                ySpeed = scale * 1;
-                break;
+                xSpeed = -scale;
+                xAxis = true;
+                yAxis = false;
+            }
+            if(code == 39){
+                ySpeed = 0;
+                xSpeed = scale;
+                xAxis = true;
+                yAxis = false;
+            }
+        }
+
+        if(code == 80){
+            togglePause();
+        }
+
+    }
+
+    function togglePause(){
+        if(!paused){
+            paused = true;
+        } else if(paused){
+            paused = false;
         }
     }
 
     function update(){
+        // pause the game
+        if(paused){
+            alert('Press any key to continue.');
+            paused = false;
+        }
+        // snake tail
         for(let i = 0; i < snake.tail.length - 1; i++){
             snake.tail[i] = snake.tail[i + 1];
         }
         snake.tail[score - 1] = {x: snake.x, y: snake.y};
-
+        // snake speed
         snake.x += xSpeed;
         snake.y += ySpeed;
     }
@@ -61,6 +96,7 @@
         context.fillStyle = '#FFFFFF';
         context.fillRect(snake.x, snake.y, scale, scale);
 
+        // drawing the snake tail
         for(let i=0; i < snake.tail.length; i++){
             context.fillRect(snake.tail[i].x, snake.tail[i].y, scale, scale);
         }
@@ -68,12 +104,11 @@
     }
 
     function getApplePosition(){
-         // randomly x and y
+         // randomly x and y for apples position
          apple.x = (Math.floor(Math.random() * rows - 1) + 1) * scale;
          apple.y = (Math.floor(Math.random() * columns - 1) + 1) * scale;
     }
     function drawApple(){
-       
 
         context.fillStyle = '#FF0000';
         context.fillRect(apple.x, apple.y, scale, scale);
