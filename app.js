@@ -48,12 +48,22 @@
     }
 
     function update(){
+        for(let i = 0; i < snake.tail.length - 1; i++){
+            snake.tail[i] = snake.tail[i + 1];
+        }
+        snake.tail[score - 1] = {x: snake.x, y: snake.y};
+
         snake.x += xSpeed;
         snake.y += ySpeed;
     }
 
     function drawSnake(){
         context.fillStyle = '#FFFFFF';
+        context.fillRect(snake.x, snake.y, scale, scale);
+
+        for(let i=0; i < snake.tail.length; i++){
+            context.fillRect(snake.tail[i].x, snake.tail[i].y, scale, scale);
+        }
         context.fillRect(snake.x, snake.y, scale, scale);
     }
 
@@ -99,6 +109,8 @@
     }
 
     function main(){
+        alert("Press Enter to play.");
+
         document.onkeydown = move;
 
         getApplePosition();
