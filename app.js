@@ -1,6 +1,6 @@
 (function(){
 
-    const canvas = document.querySelector('#board');
+    const canvas = document.querySelector('#canvas');
     const context = canvas.getContext('2d');
     const scale = 20;
     const rows = canvas.height / scale;
@@ -96,7 +96,7 @@
 
     function drawSnake(){
         // snake head
-        context.fillStyle = '#FFFFFF';
+        context.fillStyle = '#5076F9';
         context.fillRect(snake.x, snake.y, scale, scale);
 
         // drawing the snake tail
@@ -130,7 +130,7 @@
             || snake.y >= canvas.height || snake.y < 0){
             
                 // GAME OVER
-            alert('GAME OVER!!')
+                alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
             restartGame();
         }
     }
@@ -140,7 +140,7 @@
             if(snake.x === snake.tail[i].x && snake.y === snake.tail[i].y){
                 
                 // GAME OVER
-                alert('GAME OVER!!');
+                alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
                 restartGame();
             }
         }
@@ -185,7 +185,7 @@
             checkCollision();
 
 
-            document.getElementById('score').innerText = score + ' apples';
+            document.getElementById('score').innerText = score + ' Apples';
 
         }, 300);
     }
