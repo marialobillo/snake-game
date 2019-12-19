@@ -12,7 +12,56 @@
         width: scale,
         height: scale,
         tail: [],
+        draw: function(){
+             // snake head
+            context.fillStyle = '#5076F9';
+            context.fillRect(this.x, this.y, scale, scale);
+
+             // drawing the snake tail
+            this.tail.forEach( tail => {
+                context.fillRect(tail.x, tail.y, scale, scale);
+            })
+            context.fillRect(this.x, this.y, scale, scale);
+        },
+        update: function(){
+            // pause the game
+            if(paused){
+                alert('Press any key to continue.');
+                paused = false;
+            }
+            // snake tail
+            for(let i = 0; i < this.tail.length - 1; i++){
+                this.tail[i] = this.tail[i + 1];
+            }
+            this.tail[score - 1] = {x: this.x, y: this.y};
+            // moving the snake
+            this.x += xSpeed;
+            this.y += ySpeed;
+        },
+        checkWalls: function(){
+            if(this.x > canvas.width || this.x < 0 
+                || this.y >= canvas.height || this.y < 0){
+                
+                    // GAME OVER
+                    alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
+                restartGame();
+            }
+        },
+        restartGame: function (){
+
+        },
+        checkCollision: function(){
+            this.tail.forEach(tail => {
+                if(this.x === tail.x && this.y === tail.y){
+                    // GAME OVER
+                    alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
+                    restartGame();
+                }
+            })
+        }
     }
+ 
+
     let apple = {
         x: 0,
         y: 0,
@@ -78,34 +127,8 @@
         }
     }
 
-    function update(){
-        // pause the game
-        if(paused){
-            alert('Press any key to continue.');
-            paused = false;
-        }
-        // snake tail
-        for(let i = 0; i < snake.tail.length - 1; i++){
-            snake.tail[i] = snake.tail[i + 1];
-        }
-        snake.tail[score - 1] = {x: snake.x, y: snake.y};
-        // moving the snake
-        snake.x += xSpeed;
-        snake.y += ySpeed;
-    }
-
-    function drawSnake(){
-        // snake head
-        context.fillStyle = '#5076F9';
-        context.fillRect(snake.x, snake.y, scale, scale);
-
-        // drawing the snake tail
-        snake.tail.forEach( tail => {
-            context.fillRect(tail.x, tail.y, scale, scale);
-        })
-        context.fillRect(snake.x, snake.y, scale, scale);
-    }
-
+   
+   // Apple
     function getApplePosition(){
          // randomly x and y for apples position
          apple.x = (Math.floor(Math.random() * rows - 1) + 1) * scale;
@@ -124,28 +147,9 @@
         }
     }
 
-    function checkWalls(){
-       
-        if(snake.x > canvas.width || snake.x < 0 
-            || snake.y >= canvas.height || snake.y < 0){
-            
-                // GAME OVER
-                alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
-            restartGame();
-        }
-    }
 
-    function checkCollision(){
-       
-        snake.tail.forEach(tail => {
-            if(snake.x === tail.x && snake.y === tail.y){
-                // GAME OVER
-                alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
-                restartGame();
-            }
-        })
 
-    }
+ 
 
     function restartGame(){
         score = 0;
@@ -169,8 +173,8 @@
         window.setInterval(() => {
             context.clearRect(0,0, canvas.width, canvas.height);
             drawApple();
-            update();
-            drawSnake();
+            snake.update();
+            snake.draw();
 
             // eating apples
             if(eatApple()){
@@ -180,8 +184,8 @@
             }
 
             // Check collitions walls and snake itself
-            checkWalls();
-            checkCollision();
+            snake.checkWalls();
+            snake.checkCollision();
 
 
             document.getElementById('score').innerText = score + ' Apples';
