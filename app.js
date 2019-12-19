@@ -6,6 +6,17 @@
     const rows = canvas.height / scale;
     const columns = canvas.width / scale;
 
+    let xSpeed = scale * 1;
+    let ySpeed = 0;
+    // the snake is moving on axis x or y
+    let xAxis = true;
+    let yAxis = false;
+    // score
+    let score = 0;
+
+    let paused = false;
+
+    
     let snake = {
         x: 2 * scale,
         y: 2 * scale,
@@ -44,18 +55,25 @@
                 
                     // GAME OVER
                     alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
-                restartGame();
+                this.restartGame();
             }
         },
         restartGame: function (){
-
+            score = 0;
+            this.tail = [];
+            this.x = 2 * scale;
+            this.y = 2 * scale;
+            xSpeed = scale * 1;
+            ySpeed = 0;
+            xAxis = true;
+            yAxis = false;
         },
         checkCollision: function(){
             this.tail.forEach(tail => {
                 if(this.x === tail.x && this.y === tail.y){
                     // GAME OVER
                     alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
-                    restartGame();
+                    this.restartGame();
                 }
             })
         }
@@ -65,19 +83,28 @@
     let apple = {
         x: 0,
         y: 0,
+        getPosition: function(){
+             // randomly x and y for apples position
+            apple.x = (Math.floor(Math.random() * rows - 1) + 1) * scale;
+            apple.y = (Math.floor(Math.random() * columns - 1) + 1) * scale;
+        },
+        draw: function(){
+            context.fillStyle = '#FF0000';
+            context.fillRect(apple.x, apple.y, scale, scale);
+        }, 
     }
-    let xSpeed = scale * 1;
-    let ySpeed = 0;
-    // the snake is moving on axis x or y
-    let xAxis = true;
-    let yAxis = false;
-    // score
-    let score = 0;
 
-    let paused = false;
+    
+  
 
-    context.rect(snake.x, snake.y, snake.width, snake.height);
-    context.stroke();
+    function eatApple(){
+        if(snake.x == apple.x && snake.y === apple.y){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
 
 
     function move(event){
@@ -127,59 +154,31 @@
         }
     }
 
-   
-   // Apple
-    function getApplePosition(){
-         // randomly x and y for apples position
-         apple.x = (Math.floor(Math.random() * rows - 1) + 1) * scale;
-         apple.y = (Math.floor(Math.random() * columns - 1) + 1) * scale;
-    }
-    function drawApple(){
-        context.fillStyle = '#FF0000';
-        context.fillRect(apple.x, apple.y, scale, scale);
-    }
-
-    function eatApple(){
-        if(snake.x == apple.x && snake.y === apple.y){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-
  
+    context.rect(snake.x, snake.y, snake.width, snake.height);
+    context.stroke();
 
-    function restartGame(){
-        score = 0;
-        snake.tail = [];
-        snake.x = 2 * scale;
-        snake.y = 2 * scale;
-        xSpeed = scale * 1;
-        ySpeed = 0;
-        xAxis = true;
-        yAxis = false;
-    }
 
     function main(){
         alert("Press Enter to play.");
 
         document.onkeydown = move;
 
-        getApplePosition();
+        apple.getPosition();
 
 
         window.setInterval(() => {
             context.clearRect(0,0, canvas.width, canvas.height);
-            drawApple();
+            // apple
+            apple.draw();
+            // snake
             snake.update();
             snake.draw();
 
             // eating apples
             if(eatApple()){
-                getApplePosition();
-                drawApple();
+                apple.getPosition();
+                apple.draw();
                 score += 1;
             }
 
