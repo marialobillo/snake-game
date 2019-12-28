@@ -1,4 +1,4 @@
-(function(){
+(function () {
 
     const canvas = document.querySelector('#canvas');
     const context = canvas.getContext('2d');
@@ -16,107 +16,45 @@
 
     let paused = false;
 
-    
-    let snake = {
-        x: 2 * scale,
-        y: 2 * scale,
-        width: scale,
-        height: scale,
-        tail: [],
-        draw: function(){
-             // snake head
-            context.fillStyle = '#5076F9';
-            context.fillRect(this.x, this.y, scale, scale);
+    let snake = new Snake(scale);
+    let apple = new Apple();
 
-             // drawing the snake tail
-            this.tail.forEach( tail => {
-                context.fillRect(tail.x, tail.y, scale, scale);
-            })
-            context.fillRect(this.x, this.y, scale, scale);
-        },
-        update: function(){
-            // pause the game
-            if(paused){
-                alert('Press any key to continue.');
-                paused = false;
-            }
-            // snake tail
-            for(let i = 0; i < this.tail.length - 1; i++){
-                this.tail[i] = this.tail[i + 1];
-            }
-            this.tail[score - 1] = {x: this.x, y: this.y};
-            // moving the snake
-            this.x += xSpeed;
-            this.y += ySpeed;
-        },
-        checkWalls: function(){
-            if(this.x > canvas.width || this.x < 0 
-                || this.y >= canvas.height || this.y < 0){
-                
-                    // GAME OVER
-                    alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
-                this.restartGame();
-            }
-        },
-        restartGame: function (){
-            score = 0;
-            this.tail = [];
-            this.x = 2 * scale;
-            this.y = 2 * scale;
-            xSpeed = scale * 1;
-            ySpeed = 0;
-            xAxis = true;
-            yAxis = false;
-        },
-        checkCollision: function(){
-            this.tail.forEach(tail => {
-                if(this.x === tail.x && this.y === tail.y){
-                    // GAME OVER
-                    alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
-                    this.restartGame();
-                }
-            })
-        }
-    }
- 
-  
 
-    function eatApple(){
-        if(snake.x == apple.x && snake.y === apple.y){
+    function eatApple() {
+        if (snake.x == apple.x && snake.y === apple.y) {
             return true;
         } else {
             return false;
         }
     }
-    
 
 
-    function move(event){
+    function move(event) {
 
         let code = event.keyCode;
 
-        if(xAxis){
-            if(code == 38){
+        if (xAxis) {
+            if (code == 38) {
                 ySpeed = -scale;
                 xSpeed = 0;
                 xAxis = false;
                 yAxis = true;
             }
-            if(code == 40){
+            if (code == 40) {
                 ySpeed = scale;
                 xSpeed = 0;
                 xAxis = false;
                 yAxis = true;
             }
         }
-        if(yAxis){
-            if(code == 37){
+        if (yAxis) {
+            if (code == 37) {
                 ySpeed = 0;
                 xSpeed = -scale;
                 xAxis = true;
                 yAxis = false;
             }
-            if(code == 39){
+            if (code == 39) {
                 ySpeed = 0;
                 xSpeed = scale;
                 xAxis = true;
@@ -124,28 +62,32 @@
             }
         }
 
-        if(code == 80){
+        if (code == 80) {
             togglePause();
         }
 
     }
 
-    function togglePause(){
-        if(!paused){
+    function togglePause() {
+        if (!paused) {
             paused = true;
-        } else if(paused){
+        } else if (paused) {
             paused = false;
         }
     }
 
- 
-    let apple = new Apple();
+    function restartGame() {
+        score = 0;
+        snake.tail = [];
+        snake.x = 2 * scale;
+        snake.y = 2 * scale;
+        xSpeed = scale * 1;
+        ySpeed = 0;
+        xAxis = true;
+        yAxis = false;
+    }
 
-    context.rect(snake.x, snake.y, snake.width, snake.height);
-    context.stroke();
-
-
-    function main(){
+    function main() {
         alert("Press Enter to play.");
 
         document.onkeydown = move;
@@ -154,23 +96,26 @@
 
 
         window.setInterval(() => {
-            context.clearRect(0,0, canvas.width, canvas.height);
-            // apple
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
             apple.draw(context, scale);
-            // snake
-            snake.update();
-            snake.draw();
+
+            snake.update(paused, score, xSpeed, ySpeed);
+            snake.draw(context, scale);
 
             // eating apples
-            if(eatApple()){
+            if (eatApple()) {
                 apple.getPosition(rows, columns, scale);
                 apple.draw(context, scale);
                 score += 1;
             }
 
-            // Check collitions walls and snake itself
-            snake.checkWalls();
-            snake.checkCollision();
+            if (snake.isCollidingWithIfself()
+                || snake.isCollidingWithWalls(canvas)) {
+                // GAME OVER
+                alert(`YOU SCORE ${score} APPLES. GAME OVER!!`);
+                restartGame();
+            }
 
 
             document.getElementById('score').innerText = score + ' Apples';
@@ -179,6 +124,9 @@
     }
 
     // the game
+    context.rect(snake.x, snake.y, snake.width, snake.height);
+    context.stroke();
+
     main();
 
 })();
