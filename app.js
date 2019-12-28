@@ -79,22 +79,6 @@
         }
     }
  
-
-    let apple = {
-        x: 0,
-        y: 0,
-        getPosition: function(){
-             // randomly x and y for apples position
-            apple.x = (Math.floor(Math.random() * rows - 1) + 1) * scale;
-            apple.y = (Math.floor(Math.random() * columns - 1) + 1) * scale;
-        },
-        draw: function(){
-            context.fillStyle = '#FF0000';
-            context.fillRect(apple.x, apple.y, scale, scale);
-        }, 
-    }
-
-    
   
 
     function eatApple(){
@@ -155,6 +139,8 @@
     }
 
  
+    let apple = new Apple();
+
     context.rect(snake.x, snake.y, snake.width, snake.height);
     context.stroke();
 
@@ -164,21 +150,21 @@
 
         document.onkeydown = move;
 
-        apple.getPosition();
+        apple.getPosition(rows, columns, scale);
 
 
         window.setInterval(() => {
             context.clearRect(0,0, canvas.width, canvas.height);
             // apple
-            apple.draw();
+            apple.draw(context, scale);
             // snake
             snake.update();
             snake.draw();
 
             // eating apples
             if(eatApple()){
-                apple.getPosition();
-                apple.draw();
+                apple.getPosition(rows, columns, scale);
+                apple.draw(context, scale);
                 score += 1;
             }
 
